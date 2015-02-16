@@ -1,5 +1,13 @@
 #!/bin/bash
 
+function magic() {
+    local installed="$(magic_from "$PWD" | tac)"
+
+    for magic in $installed; do
+	echo "$magic/.magic"
+    done
+}
+
 function magic_from() {
     local dir="$1"
     [[ -z "$dir" ]] && return
@@ -22,12 +30,9 @@ function magic_install() {
 
 function magic_uninstall() {
     local magic="$1"
-    local spells="$magic/.spells"
     
-    if [[ -w "$spells" ]]; then
-	[[ -n "$MAGIC_DEBUG" ]] && echo "uninstalling $magic"
-	unset $(bash $magic/.magic)
-    fi
+    [[ -n "$MAGIC_DEBUG" ]] && echo "uninstalling $magic"
+    unset $(bash $magic/.magic)
 }
 
 if [[ "$PWD" != "$LAST" ]]; then
