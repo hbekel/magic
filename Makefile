@@ -4,8 +4,8 @@ DESTDIR=
 all: magic
 
 install:
-	install -D -m644 magic $(DESTDIR)$(PREFIX)/share/magic/magic
+	install -D -m644 magic $(DESTDIR)$(PREFIX)/lib/magic/magic
 
 uninstall:
-	rm ${PREFIX}/share/magic/magic
+	rm -r ${PREFIX}/lib/magic/
 
