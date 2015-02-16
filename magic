@@ -1,0 +1,51 @@
+#!/bin/bash
+
+function magic_from() {
+    local dir="$1"
+    [[ -z "$dir" ]] && return
+
+    while [[ "$dir" != "/" ]]; do
+	[[ -r "$dir/.magic" ]] && [[ -O "$dir/.magic" ]] && echo "$dir "
+	dir="$(dirname "$dir")"
+    done
+}
+
+function magic_install() {
+    local magic="$1"
+    
+    if [[ -w "$magic" ]] && [[ -O "$magic/.magic" ]]; then
+	[[ -n "$MAGIC_DEBUG" ]] && echo "installing $magic"
+
+	source "$magic/.magic" > /dev/null
+    fi
+}
+
+function magic_uninstall() {
+    local magic="$1"
+    local spells="$magic/.spells"
+    
+    if [[ -w "$spells" ]]; then
+	[[ -n "$MAGIC_DEBUG" ]] && echo "uninstalling $magic"
+	unset $(bash $magic/.magic)
+    fi
+}
+
+if [[ "$PWD" != "$LAST" ]]; then
+    
+    uninstall="$(magic_from "$LAST")"
+    install="$(magic_from "$PWD" | tac)"
+
+    if [[ "$uninstall" != "$install" ]] || [[ -n "$MAGIC_DEBUG" ]]; then
+
+	for magic in $uninstall; do
+	    magic_uninstall "$magic"
+	done
+
+	for magic in $install; do
+	    magic_install "$magic"
+	done
+    fi;
+
+    unset install uninstall
+    LAST="$PWD"
+fi;
