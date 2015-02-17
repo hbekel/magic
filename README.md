@@ -25,6 +25,9 @@ Upon entering the directory the `.spells` file will be sourced and the functions
 defined in it will be available at the prompt. Upon leaving the directory all functions
 will be `unset` again (provided the `.spells` script correctly echoes their names).
 
+The function `magic` lists the currently installed `.spells` files in
+the order in which they were sourced.
+
 # Examples
 
 ## A simple `get` command for github
