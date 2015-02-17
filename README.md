@@ -70,3 +70,7 @@ More specifically, whenever you change into a directory, the current path will b
 the root of the filesystem. Every readable `.spells` files encountered along the way will be sourced immediately.
 This means that `.spells` files further down the hierarchy can effectively override functions defined in `.spells`
 files residing higher up in the hierarchy.
+
+# Feedback
+
+If you do something interesting with this, please let me know :)
