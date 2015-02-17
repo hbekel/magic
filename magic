@@ -13,22 +13,17 @@ function magic_from() {
     [[ -z "$dir" ]] && return
 
     while [[ "$dir" != "/" ]]; do
-	[[ -r "$dir/.spells" ]] && [[ -O "$dir/.spells" ]] && echo "$dir "
+	[[ -r "$dir/.spells" ]] && echo "$dir "
 	dir="$(dirname "$dir")"
     done
 }
 
 function magic_install() {
-    local magic="$1"
-    
-    if [[ -w "$magic" ]] && [[ -O "$magic/.spells" ]]; then
-	source "$magic/.spells" > /dev/null
-    fi
+    source "$1/.spells" > /dev/null
 }
 
 function magic_uninstall() {
-    local magic="$1"    
-    unset $(bash $magic/.spells)
+    unset $(bash "$1/.spells")
 }
 
 if [[ "$PWD" != "$MAGIC_LAST" ]]; then
@@ -41,7 +36,7 @@ if [[ "$PWD" != "$MAGIC_LAST" ]]; then
 	for magic in $uninstall; do
 	    magic_uninstall "$magic"
 	done
-
+	
 	for magic in $install; do
 	    magic_install "$magic"
 	done
