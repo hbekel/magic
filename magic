@@ -2,9 +2,11 @@
 
 function magic() {
     local installed="$(magic_from "$PWD" | tac)"
+    local spells
 
     for magic in $installed; do
-	echo "$magic/.spells"
+        mapfile -t spells <<< "$(bash "$magic/.spells")"
+	echo "$magic/.spells: ${spells[@]}"
     done
 }
 
