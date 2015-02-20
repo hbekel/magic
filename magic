@@ -1,14 +1,4 @@
-#!/bin/bash
-
-function magic() {
-    local installed="$(magic_from "$PWD" | tac)"
-    local spells
-
-    for magic in $installed; do
-        mapfile -t spells <<< "$(bash "$magic/.spells")"
-	echo "$magic/.spells: ${spells[@]}"
-    done
-}
+# -*- shell-script -*-
 
 function magic_from() {
     local dir="$1"
@@ -20,14 +10,6 @@ function magic_from() {
     done
 }
 
-function magic_install() {
-    source "$1/.spells" > /dev/null
-}
-
-function magic_uninstall() {
-    unset $(bash "$1/.spells")
-}
-
 if [[ "$PWD" != "$MAGIC_LAST" ]]; then
     
     uninstall="$(magic_from "$MAGIC_LAST")"
@@ -36,14 +18,16 @@ if [[ "$PWD" != "$MAGIC_LAST" ]]; then
     if [[ "$uninstall" != "$install" ]]; then
 
 	for magic in $uninstall; do
-	    magic_uninstall "$magic"
+	    unset $(bash "$magic/.spells")
 	done
 	
 	for magic in $install; do
-	    magic_install "$magic"
+	    source "$magic/.spells" > /dev/null
 	done
     fi;
 
     unset install uninstall
     MAGIC_LAST="$PWD"
 fi;
+
+unset magic_from
