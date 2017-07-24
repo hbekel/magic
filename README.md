@@ -13,6 +13,11 @@ Add the following line to your .bashrc:
 
     PROMPT_COMMAND="$PROMPT_COMMAND; source /usr/lib/magic/magic"
 
+Or if you use zsh, add this to your .zshrc:
+
+    precmd() { eval "$PROMPT_COMMAND" }
+    PROMPT_COMMAND="source /usr/lib/magic/magic"
+
 If you used a different `PREFIX`, adjust the path accordingly.
 
 # Usage
@@ -34,11 +39,11 @@ the directory all functions will be `unset` again (provided the
 Assume you have a directory `~/workspace` under which you store your
 git repositories.  Create a `.spells` file in this directory, defining
 a function called `get`:
-    
+
     function get() {
        local author="$1"
        local project="$2"
-      
+
        git clone "https://github.com/${author}/${project}"
     }
     echo get
@@ -65,7 +70,7 @@ And that `~/music/.spells` reads
         mplayer "$@"
     }
     echo play
-    
+
 
 Anywhere in your home directory `play` will echo `THE ONLY WINNING
 MOVE IS NOT TO PLAY`, except below the `music` directory, where `play

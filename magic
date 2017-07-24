@@ -5,25 +5,25 @@ function magic_from() {
     [[ -z "$dir" ]] && return
 
     while [[ "$dir" != "/" ]]; do
-	[[ -r "$dir/.spells" ]] && echo "$dir "
-	dir="$(dirname "$dir")"
+        [[ -r "$dir/.spells" ]] && echo "$dir"
+        dir="$(dirname "$dir")"
     done
 }
 
 if [[ "$PWD" != "$MAGIC_LAST" ]]; then
-    
+
     uninstall="$(magic_from "$MAGIC_LAST")"
     install="$(magic_from "$PWD" | tac)"
 
     if [[ "$uninstall" != "$install" ]]; then
 
-	for magic in $uninstall; do
-	    unset $(bash "$magic/.spells")
-	done
-	
-	for magic in $install; do
-	    source "$magic/.spells" > /dev/null
-	done
+        for magic in $uninstall; do
+            unset -f $(${SHELL} "$magic/.spells")
+        done
+
+        for magic in $install; do
+            source "$magic/.spells" > /dev/null
+        done
     fi;
 
     unset install uninstall
