@@ -17,13 +17,17 @@ if [[ "$PWD" != "$MAGIC_LAST" ]]; then
 
     if [[ "$uninstall" != "$install" ]]; then
 
-        for magic in $uninstall; do
-            unset -f $(${SHELL} "$magic/.spells")
-        done
+        while read -r magic; do
+            if [[ ! -z "$magic" ]]; then
+                unset -f $(${SHELL} "$magic/.spells") 2>/dev/null
+            fi
+        done <<< "$uninstall"
 
-        for magic in $install; do
-            source "$magic/.spells" > /dev/null
-        done
+        while read -r magic; do
+            if [[ ! -z "$magic" ]]; then
+                source "$magic/.spells" > /dev/null
+            fi
+        done <<< "$install"
     fi;
 
     unset install uninstall
