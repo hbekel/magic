@@ -1,37 +1,49 @@
 # -*- shell-script -*-
 
-function magic_from() {
-    local dir="$1"
-    [[ -z "$dir" ]] && return
+function magic_load() {
 
-    while [[ "$dir" != "/" ]]; do
-        [[ -r "$dir/.spells" ]] && echo "$dir"
-        dir="$(dirname "$dir")"
-    done
-}
+    function magic_from() {
+        local dir="$1"
+        [[ -z "$dir" ]] && return
 
-if [[ "$PWD" != "$MAGIC_LAST" ]]; then
+        while [[ "$dir" != "/" ]]; do
+            [[ -r "$dir/.spells" ]] && echo "$dir"
+            dir="$(dirname "$dir")"
+        done
+    }
 
-    uninstall="$(magic_from "$MAGIC_LAST")"
-    install="$(magic_from "$PWD" | tac)"
+    if [[ "$PWD" != "$MAGIC_LAST" ]]; then
 
-    if [[ "$uninstall" != "$install" ]]; then
+        uninstall="$(magic_from "$MAGIC_LAST")"
+        install="$(magic_from "$PWD" | tac)"
 
-        while read -r magic; do
-            if [[ ! -z "$magic" ]]; then
-                unset -f $(${SHELL} "$magic/.spells") 2>/dev/null
-            fi
-        done <<< "$uninstall"
+        if [[ "$uninstall" != "$install" ]]; then
 
-        while read -r magic; do
-            if [[ ! -z "$magic" ]]; then
-                source "$magic/.spells" > /dev/null
-            fi
-        done <<< "$install"
+            while read -r magic; do
+                if [[ ! -z "$magic" ]]; then
+                    unset -f $(${SHELL} "$magic/.spells") 2>/dev/null
+                fi
+            done <<< "$uninstall"
+
+            while read -r magic; do
+                if [[ ! -z "$magic" ]]; then
+                    source "$magic/.spells" > /dev/null
+                fi
+            done <<< "$install"
+        fi;
+
+        unset install uninstall
+        MAGIC_LAST="$PWD"
     fi;
 
-    unset install uninstall
-    MAGIC_LAST="$PWD"
-fi;
+    unset magic_from
+}
 
-unset magic_from
+if [ -n "$ZSH_VERSION" ]; then
+  autoload add-zsh-hook
+  add-zsh-hook precmd magic_load
+elif [ -n "$BASH_VERSION" ]; then
+  PROMPT_COMMAND="magic_load; $PROMPT_COMMAND"
+else
+  echo "Unknown shell not supported for magic"
+fi

@@ -9,14 +9,9 @@ define bash functions on a per-directory basis
 
 `make DESTDIR=stage install` for a staged install.
 
-Add the following line to your .bashrc:
+Add the following line to your .bashrc or .zshrc:
 
-    PROMPT_COMMAND="$PROMPT_COMMAND; source /usr/lib/magic/magic"
-
-Or if you use zsh, add this to your .zshrc:
-
-    precmd() { eval "$PROMPT_COMMAND" }
-    PROMPT_COMMAND="source /usr/lib/magic/magic"
+    source /usr/lib/magic/magic
 
 If you used a different `PREFIX`, adjust the path accordingly.
 
